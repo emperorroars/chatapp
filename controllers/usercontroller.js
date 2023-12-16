@@ -21,10 +21,10 @@ exports.signup = async (req, res) => {
     res.status(500).json(err);
   }
 };
-/*
+
 function generateAccessToken(id,name,ispremiumuser)
 {console.log("this is name in gt",name)
-  return jwt.sign({userId:id,name:name,ispremiumuser:ispremiumuser},`secretencryption`)
+  return jwt.sign({userId:id,name:name},`secretencryption`)
 }
 
 exports.login = async (req, res) => {
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
         }
         if(result===true)
         {
-        return res.status(200).json({ success: true, message: 'User logged in successfully',token:generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser )});
+        return res.status(200).json({ success: true, message: 'User logged in successfully',token:generateAccessToken(user[0].id,user[0].name )});
       } else {
         return res.status(400).json({ success: false, message: 'Password is incorrect' });
       }
@@ -56,4 +56,3 @@ exports.login = async (req, res) => {
   }
 };
 exports.generateAccessToken = generateAccessToken
-*/

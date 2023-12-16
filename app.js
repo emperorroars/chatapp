@@ -8,7 +8,10 @@ const path = require("path")
 const cors = require("cors")
 const userroute = require(`./routes/userroute`)
 const app = express()
-app.use(cors())
+app.use(cors({
+   origin: "http://localhost:4000"
+  
+}))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', mainPageRouter)

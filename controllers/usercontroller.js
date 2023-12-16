@@ -4,14 +4,15 @@ const jwt=require(`jsonwebtoken`)
 
 exports.signup = async (req, res) => {
   console.log('adding');
+  console.log(req)
   try {
-    const { name, password, email } = req.body;
+    const { name, password, email, phoneno } = req.body;
     bcrypt.hash(password, 10, async (err, hash) => {
       if (err) {
         console.error('Error hashing password', err);
         res.status(500).json(err);
       } else {
-        await User.create({ name, password: hash, email });
+        await User.create({ name, password: hash, email,phoneno });
         res.status(201).json({ message: 'Successfully created new user' });
       }
     });

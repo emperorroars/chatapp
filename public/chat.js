@@ -1,18 +1,21 @@
+
 window.addEventListener("DOMContentLoaded",()=>{
   console.log("reloaded")
   const token = localStorage.getItem('token');
-  axios.get("/chat/get", {
+ axios.get("/chat/get", {
     headers: { "Authorization": token }})
   .then((response) => {
     console.log(" i am the user",response)
     for(var i=0;i<response.data.length;i++)
-    renderExpenseList(response.data[i])
-    
+    renderExpenseList(response.data[i])   
   })
   .catch((err) => {
     console.log(err)
   })
 })
+setTimeout(() =>{  
+  window.location.reload();
+}, 10000)
 var SendButton = document.getElementById('send')
 SendButton.addEventListener("click",addchat)
 

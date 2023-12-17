@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
-    <link rel="stylesheet"href="style.css">
 </head>
 <body>
-    <div class="search">
-        <input class="srch" type="search" name="" placeholder="Type To text">
-        <a href="#"> <button class="btn">Send</button></a>
+    <div class="message">
+        <input class="message" type="message" id="message" placeholder="Type To text">
+        <a href="#"> <button class="btn"id="send">Send</button></a>
     </div>
+    <ul id="chats" class="list-group"> </ul>
+    <script src="chat.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     
 </body>
 </html>

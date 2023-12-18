@@ -1,21 +1,59 @@
-
+let id
+let localmessage=[]
 window.addEventListener("DOMContentLoaded",()=>{
   console.log("reloaded")
   const token = localStorage.getItem('token');
- axios.get("/chat/get", {
+  
+  let index;
+  //if (localmessage.data == [] || localmessage.data === null)
+  if (!localmessage.data || localmessage.data.length === 0)
+  { index=0 
+    console.log("haihello")
+    axios.get(`/chat/get/${id}`, {
+      headers: { "Authorization": token }})
+    .then((response) => {
+      console.log("this is response",response)
+     // let mergedData = localmessage.data.concat(response.data)
+      localStorage.setItem('localmessage',JSON.stringify(response))
+       console.log(localmessage)
+      console.log(" i am the user",response)
+      for(var i=0;i<response.data.length;i++)
+      renderExpenseList(response.data[i])   
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+   
+else{
+  let localmessage=JSON.parse(localStorage.getItem('localmessage'))
+  console.log("plingu",localmessage)
+  console.log("find local message",localmessage)
+  index = localmessage.data.length - 1;
+  console.log("find index",index)
+   id=localmessage.data[index].id
+  console.log("find the id",id)
+  axios.get(`/chat/get/${id}`, {
     headers: { "Authorization": token }})
   .then((response) => {
+    console.log("this is response",response)
+    let mergedData = localmessage.data.concat(response.data)
+    localStorage.setItem('localmessage',JSON.stringify(mergedData))
+     console.log(localmessage)
     console.log(" i am the user",response)
-    for(var i=0;i<response.data.length;i++)
-    renderExpenseList(response.data[i])   
+    for(var i=0;i<localmessage.data.length;i++)
+    renderExpenseList(localmessage.data[i])   
   })
   .catch((err) => {
     console.log(err)
   })
+
+}
 })
-setTimeout(() =>{  
-  window.location.reload();
-}, 10000)
+/*setTimeout(() =>{  
+  window.location.reload()
+  
+}, 1000)*/
 var SendButton = document.getElementById('send')
 SendButton.addEventListener("click",addchat)
 
@@ -52,7 +90,7 @@ function addchat(event) {
       //expenses.forEach((expense, index) => {
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item';
-        listItem.textContent = `${chat.message}`;
+        listItem.textContent = `${chat.name}:${chat.message}`;
     
         /*const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger btn-sm float-right delete';

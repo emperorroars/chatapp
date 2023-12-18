@@ -1,6 +1,7 @@
 const Chat=require('../models/chat')
 const User = require('../models/user');
 const sequelize = require('../utils/database');
+const Sequelize=require("sequelize")
 exports.add = (req, res) => {
     console.log("adding")
       console.log("see the user now", req.user);
@@ -9,7 +10,9 @@ exports.add = (req, res) => {
   
        Chat.create({
         message: req.body.message,
+        name:req.user.name,
         userId:req.user.id
+
         })
         .then(()=>{
             res.status(200).json({ success: true, message: "Success" });
@@ -22,7 +25,14 @@ exports.add = (req, res) => {
     })
   };
   exports.get=(req,res)=>{
-    Chat.findAll()
+    console.log("this is the req",req.params)
+    Chat.findAll({
+      where: {
+        id: {
+          [Sequelize.Op.gt]: req.params.id
+        }
+      }
+    })
       .then(chats => {
         res.json(chats);
       })

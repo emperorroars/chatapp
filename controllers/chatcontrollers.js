@@ -1,5 +1,6 @@
 const Chat=require('../models/chat')
 const User = require('../models/user');
+const Group = require("../models/group");
 const sequelize = require('../utils/database');
 const Sequelize=require("sequelize")
 exports.add = (req, res) => {
@@ -11,7 +12,8 @@ exports.add = (req, res) => {
        Chat.create({
         message: req.body.message,
         name:req.user.name,
-        userId:req.user.id
+        userId:req.user.id,
+        groupId:req.body.groupId
 
         })
         .then(()=>{
@@ -25,20 +27,28 @@ exports.add = (req, res) => {
     })
   };
   exports.get=(req,res)=>{
-    console.log("this is the req",req.params)
+    console.log("this is the req",req.query)
     Chat.findAll({
+      include: {
+        model: Group,
+        attributes: ["id", "groupname", "createdby"],
+      },
       where: {
         id: {
-          [Sequelize.Op.gt]: req.params.id
-        }
-      }
+          [Sequelize.Op.gt]: req.query.id,
+        },
+        groupId: req.query.groupId,
+      },
     })
-      .then(chats => {
-        res.json(chats);
+      .then((data) => {
+        res.json(data);
+        console.log(data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
-        res.status(500).json({ error: 'An error occurred while fetching expenses' });
+        res
+          .status(500)
+          .json({ error: "An error occurred while fetching chats" });
       });
   };
 

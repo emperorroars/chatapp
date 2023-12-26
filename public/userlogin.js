@@ -17,13 +17,20 @@ function details(event)
         alert(response.data.message);
         console.log(response.data)
         localStorage.setItem('token',response.data.token)
+        window.location.href="/pagechat"
         
        
     })
     .catch((err)=>{
-        console.log(JSON.stringify(err))
-       const failuremessage=document.getElementById("failuremessage")
-       failuremessage.innerHTML="Login failed"
+      
+          if (err.response && err.response.data && err.response.data.message) {
+            alert(err.response.data.message);
+          
+          } else {
+            //Generic error handling if the specific message is not available
+           
+            alert("An error occurred during login.");
+          }
   
     })
 }

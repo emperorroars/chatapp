@@ -22,7 +22,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-function generateAccessToken(id,name,ispremiumuser)
+function generateAccessToken(id,name)
 {console.log("this is name in gt",name)
   return jwt.sign({userId:id,name:name},`secretencryption`)
 }

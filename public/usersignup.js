@@ -12,13 +12,14 @@ function details(event)
         name:name,
         password:password,
         email:email,
-        phone:phoneno
+        phoneno:phoneno
     }
     console.log(user)
     axios.post(`/user/signup`, user)
     .then((response)=>{
         console.log("posted")
         alert(response.data.message);
+        window.location.href = "/login";
     })
     .catch((err)=>{
        const failuremessage=document.getElementById("failuremessage")

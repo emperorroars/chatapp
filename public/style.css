@@ -1,0 +1,155 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: 'Open Sans',sans-serif;
+}
+body{
+    display:flex; /*used to create flexibility for child items so that it is responsive to different screen sizes*/
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:rgb(22, 131, 190);
+}
+
+.chat {/*. IS USED IN FRONT IF IT IS A CLASS*/
+    position: relative;
+    width: 340px;
+    height: 480px;
+    background: white;
+     align-items: center;
+     border: 2px solid black;
+      margin-top: 40px;
+      margin-bottom: 20px
+     
+    
+   
+}
+.chat header{
+    position:relative;
+    background:rebeccapurple;
+    padding: 10px 10px 5px 120px;/*used to specify space between the content and border odf element*/
+    display:flex;
+   justify-content:space-between;
+    
+
+}
+.chat header .logo
+{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    font-size: 1em;
+    justify-content: center; 
+    align-items: center;
+ 
+   
+   
+  
+
+}
+.chat header .action{
+    position:relative;
+    display: flex;
+    gap:15px
+}
+.chat header .action a{
+    color:white;
+    display:flex;
+    font-size:1.3em;
+    text-decoration:none;
+    margin-right: 0;
+    
+
+}
+/*
+.tabs input{                          
+    visibility:hidden;
+    display:none;
+}
+.buttons{
+    position:relative;
+    display:flex;
+    background: rgb(13, 225, 45);
+}
+
+.buttons label{
+    width:33.33%;
+    color:white;
+    opacity:.75;
+    text-align:center;
+    padding:5 px 0;
+    font-weight:700;
+    font-size: .9em;
+    cursor:pointer;
+}*/
+.boxchats{
+    background:pink;
+}
+.boxheader{
+     position:relative;
+    background:rebeccapurple;
+    color:white;
+    padding: 10px 10px 5px 180px;/*used to specify space between the content and border odf element*/
+    display:flex;
+   justify-content:space-between;
+    
+
+}
+
+.messageinput{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:rebeccapurple;
+    padding:5px 10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+.messageinput .input{
+    position:relative;
+    background:white;
+    padding:5px 10px;
+    width:360px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor: pointer;
+}
+
+   
+     .container {/*. IS USED IN FRONT IF IT IS A CLASS*/
+    position: relative;
+    width: 400px;
+    height: 580px;
+    background: white;
+   
+}
+.container header{
+    position:relative;
+    background:rebeccapurple;
+    padding:20px 10px;/*used to specify space between the content and border odf element*/
+    display:flex;
+   justify-content:space-between;
+    justify-content: center; 
+    align-items: center;
+
+}
+.container header .logo
+{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    font-size: 1.1em;
+    align-items: center;
+    justify-content: center
+   
+  
+
+}
+
+

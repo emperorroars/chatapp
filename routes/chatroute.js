@@ -6,7 +6,8 @@ console.log("chat is working")
 router.post('/',userauthentication.authenticate,chatcontrollers.add)
 //router.delete('/deleteexpense/:id',userauthentication.authenticate,expensecontrollers.delete)
 //router.put('/:id',expensecontrollers.edit)
-router.get('/get/:id',userauthentication.authenticate,chatcontrollers.get)
+router.get('/',userauthentication.authenticate,chatcontrollers.get)
+router.get("/groupdetails", userauthentication.authenticate, chatcontrollers.groupdetails);
 //router.get('/download',userauthentication.authenticate,expensecontrollers.downloadexpense)
 
 module.exports=router

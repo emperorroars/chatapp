@@ -1,4 +1,5 @@
 var currentGroupId;
+let currentgroup;
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -35,6 +36,7 @@ async function getGroupList(e) {
         console.log(groupId);
         currentGroupId = Number(groupId[0]);
         console.log(currentGroupId);
+        localStorage.setItem("currentgroup",currentGroupId)
         getMessageById(groupId[0]);
       });
     }
@@ -94,8 +96,28 @@ async function getMessageById(groupId) {
     let index;
     const messageList = document.getElementById('boxchats');
     const groupName = document.getElementById("boxheader");
+    const token = localStorage.getItem("token");
+    const decodetoken = parseJwt(token);
     //groupName.addEventListener('click',getAdmin);
    messageList.innerHTML = "";
+   
+    const data = await axios.get(`/chat/groupdetails?groupId=${groupId}`, {
+      headers: { Authorization: localStorage.getItem("token") },
+    });
+    groupName.innerHTML = `${data?.data?.groupname}`;
+    if (decodetoken.userId===data.data.createdby) 
+    { console.log(decodetoken.userId); 
+      console.log(data.data.createdby);
+      const action = document.getElementById("action");
+    action.style.display = "flex";
+  }
+    else {
+      console.log(decodetoken.userId);
+      console.log(data.data.createdby);
+      const action = document.getElementById("action");
+      action.style.display = "none";
+    }
+   console.log("find the group details", data);
       if (!localmessage.data || localmessage.data.length === 0) {
         id = 0;
         console.log("haihello");
@@ -109,7 +131,7 @@ async function getMessageById(groupId) {
         console.log("this is response", data);
         localStorage.setItem("localmessage", JSON.stringify(data));
         console.log(localmessage);
-        groupName.innerHTML = `${data?.data[0]?.group?.groupname}`;
+       // groupName.innerHTML = `${data?.data[0]?.group?.groupname}`;
         console.log(groupName)
         for(let i=0;i<data.data.length;i++)
         {
@@ -142,7 +164,7 @@ async function getMessageById(groupId) {
                console.log("this is response", data);
                localStorage.setItem("localmessage", JSON.stringify(data));
                console.log(localmessage);
-               groupName.innerHTML = `${data?.data?.data[0]?.group?.groupname}`;
+              // groupName.innerHTML = `${data?.data?.data[0]?.group?.groupname}`;
                for (let i = 0; i < data.data.length; i++) {
                  const obj = {
                    id: data.data[i].id,

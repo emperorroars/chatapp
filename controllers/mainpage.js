@@ -10,6 +10,9 @@ exports.getchat = (request, response, next) => {
 exports.creategroup = (request, response, next) => {
   response.sendFile("creategroup.html", { root: "views" });
 };
+exports.updategroup = (request, response, next) => {
+  response.sendFile("updategroup.html", { root: "views" });
+};
 /*exports.getforgotpassword = (request, response, next) => {
     response.sendFile('forgotpassword.html', { root: 'views' });
 }*/

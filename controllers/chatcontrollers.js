@@ -51,5 +51,22 @@ exports.add = (req, res) => {
           .json({ error: "An error occurred while fetching chats" });
       });
   };
-
+  exports.groupdetails = (req, res) => {
+    console.log("this is the req of groupdetails", req.query);
+    Group.findOne({
+      where: {
+        id:req.query.groupId,
+      },
+    })
+      .then((data) => {
+        res.json(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(500)
+          .json({ error: "An error occurred while fetching chats" });
+      });
+  };
   

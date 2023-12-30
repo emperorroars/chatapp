@@ -1,5 +1,12 @@
 var currentGroupId;
 let currentgroup;
+const socket = io(window.location.origin);
+socket.on('group-message', (currentGroupId) => {
+    
+        getMessageById(currentGroupId)
+    
+})
+
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -75,7 +82,7 @@ sendMessage.addEventListener("click", async (e) => {
   const data = await axios.post(`/chat`, message, {
     headers: { Authorization: localStorage.getItem("token") },
   });
-   getMessageById(message.groupId);
+  // getMessageById(message.groupId);
   // let messages = [];
   // if (isMessage()) {
   //     messages = localStorage.getItem('messages');
@@ -84,6 +91,15 @@ sendMessage.addEventListener("click", async (e) => {
   // messages.push({ id: data?.data?.data?.id, name: "You", message: data?.data?.data?.message })
   //displayMessage("You", data?.data?.data?.message, data?.data?.data?.id);
   inputChat.value = "";
+  socket.emit('new-group-message', currentGroupId)
+  {
+    getMessageById(currentGroupId)
+    console.log("hi socket")
+
+  }
+                
+            
+
   //inputChat.focus();
 });
 

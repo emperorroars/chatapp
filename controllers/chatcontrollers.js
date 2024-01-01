@@ -2,6 +2,7 @@ const Chat=require('../models/chat')
 const User = require('../models/user');
 const Group = require("../models/group");
 const sequelize = require('../utils/database');
+const awsService = require('../middleware/awsservices');
 const Sequelize=require("sequelize")
 exports.add = (req, res) => {
     console.log("adding")
@@ -69,4 +70,30 @@ exports.add = (req, res) => {
           .json({ error: "An error occurred while fetching chats" });
       });
   };
+  exports.saveChatImages = async (request, response, next) => {
+    try {
+        const user = request.user;
+        const image = request.file;
+        console.log("this is image",request,image)
+        const  groupId  = request.body.GroupId;
+        const filename = `chat-images/group${groupId}/user${user.id}/${image.originalname}`;
+        const imageUrl = await awsService.uploadToS3(image.buffer, filename)
+    
+        
+            await user.createChat({
+                message: imageUrl,
+                groupId,
+              name:request.user.name,
+              isImage: true
+            })
+      
+
+        return response.status(200).json({ message: "image saved to database succesfully" })
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ message: 'Internal Server error!' })
+    }
+}
+
   

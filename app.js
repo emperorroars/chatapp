@@ -1,4 +1,8 @@
 require('dotenv').config();
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+//const { instrument } = require('@socket.io/admin-ui');
+//const websocketService = require('./services/websocket');
 const mainPageRouter = require('./routes/mainpage');
 const sequelize = require('./utils/database');
 const User = require('./models/user')
@@ -14,9 +18,25 @@ const chatroute = require(`./routes/chatroute`)
 const grouproutes = require(`./routes/grouproutes`);
 const app = express()
 app.use(cors({
-   origin: "http://localhost:4000"
+   /*origin: "http://localhost:4000"*/
+   origin: '*',
+  methods:['GET','POST','DELETE'],
   
 }))
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io",],
+    credentials: true
+  }
+});
+io.on('connection', (socket) => {
+socket.on('new-group-message', (currentGroupId)=> {
+            socket.broadcast.emit('group-message',currentGroupId);
+    })
+  })
+
+//instrument(io, { auth: false })
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')));
 User.hasMany(Chat)
@@ -33,7 +53,7 @@ app.use('/group', grouproutes);
 sequelize.sync()
     .then(() => {
         console.log('Database tables have been created.');
-        app.listen(process.env.PORT, () => {
+        httpServer.listen(process.env.PORT, () => {
             console.log("Server is running");
         });
     })

@@ -68,20 +68,39 @@ div.innerHTML = `
 const sendMessage = document.getElementById("sendMessage");
 sendMessage.addEventListener("click", async (e) => {
   e.preventDefault();
-  const inputChat = document.getElementById("inputChat");
-  console.log(inputChat.value);
+   const fileInput = document.getElementById("fileInput");
+    const inputChat = document.getElementById("inputChat");
+    const selectedFile = fileInput.files[0];
+  if (selectedFile && selectedFile.type.startsWith('image/')) {
+        // Handle image upload
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+        formData.append('GroupId', currentGroupId);
+        const data = await axios.post('/chat/image', formData, {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'multipart/form-data'//we require multer for this which we have not yet installed
+                }
+            });
+          }
+          else if (inputChat.value.trim() !== ''){
+console.log(inputChat.value);
   const message = {
     message: inputChat?.value,
     groupId: currentGroupId,
-  };
+     };
+    const data = await axios.post(`/chat`, message, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
+ 
+          }
+  
   /*const messageList = document.getElementById("messageList");
   let id = 1;
   if (messageList.lastElementChild !== null)
     id = messageList.lastElementChild.id;
   await getMessageById(currentGroupId, id);*/
-  const data = await axios.post(`/chat`, message, {
-    headers: { Authorization: localStorage.getItem("token") },
-  });
+  
   // getMessageById(message.groupId);
   // let messages = [];
   // if (isMessage()) {
@@ -156,9 +175,10 @@ async function getMessageById(groupId) {
                  id: data.data[i].id,
                  name: data.data[i].name,
                  message: data.data[i].message,
+                  isImage:data.data[i].isImage
                };
                console.log(obj);
-                displayMessage(obj.name, obj.message, obj.id);    
+               displayMessage(obj.name, obj.message, obj.id,obj.isImage);      
         }
      
       } 
@@ -186,26 +206,49 @@ async function getMessageById(groupId) {
                    id: data.data[i].id,
                    name: data.data[i].name,
                    message: data.data[i].message,
+                   isImage:data.data[i].isImage
                  };
                  console.log(obj);
-                displayMessage(obj.name, obj.message, obj.id);    
+                displayMessage(obj.name, obj.message, obj.id,obj.isImage);    
                }
          
       }
 }
 
-  const displayMessage = (name, message, id) => {
+  const displayMessage = (name, message, id,isImage) => {
      const token = localStorage.getItem("token");
     const decodetoken = parseJwt(token);
     const messageList = document.getElementById("boxchats");
     let element = document.createElement("div");
     element.id = id;
-    if (name === decodetoken.name)
-      element.className = "chat__main-msg chat__main-msg-me";
-    else element.className = "chat__main-msg chat__main-msg-user";
-    element.innerHTML = `${name}: ${message}`;
+    console.log(isImage)
+    //if (name === decodetoken.name)
+    //  element.className = "chat__main-msg chat__main-msg-me";
+   // else element.className = "chat__main-msg chat__main-msg-user";
+    if (isImage==1) {
+      console.log("image hai")
+        // If it is an image URL, create an <img> element to display it
+        element.innerHTML = `${name}: <a href="${message}"><img src="${message}" alt="Image" style="max-width: 200px; height: auto;"></a>`;
+
+    } else {
+        // If it's not an image URL, display it as text
+        element.innerHTML = `${name}: ${message}`;
+    }
+    
     messageList.appendChild(element);
   };
   
+  
+document.getElementById('attachButton').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default button behavior
+    var inputChat = document.getElementById('inputChat');
+    var fileDisplay = document.getElementById('fileDisplay');
 
-   
+    if (inputChat.style.display !== 'none') {
+        inputChat.style.display = 'none';
+        fileDisplay.style.display = 'flex';
+    } else {
+        inputChat.style.display = 'flex';
+        fileDisplay.style.display = 'none';
+    }
+});

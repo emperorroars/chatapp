@@ -56,7 +56,11 @@
 
       <div class="messageinput">
         <div class="input">
-          <ion-icon name="attach-outline"></ion-icon>
+          <button id="attachButton"><ion-icon name="attach-outline"></ion-icon></button>
+          <div id="fileDisplay" style="display:none;">
+<input type="file" id="fileInput" accept="image/*" />
+          </div>
+            
           <input type="text" id="inputChat" placeholder="Enter your Message" />
           <button type="submit" id="sendMessage"><ion-icon name="send-sharp"></ion-icon></button>
         </div>

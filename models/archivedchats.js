@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const Chat = sequelize.define('chat', {
+const ArchivedChat = sequelize.define('ArchivedChat', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -19,12 +19,8 @@ const Chat = sequelize.define('chat', {
 name:{
   type: Sequelize.STRING,
   allowNull: false,
-},
-  date_time: {
-        type: Sequelize.DATE, 
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'), 
-      },},
-      { timestamps: false},
- );
+}}, {
+    timestamps: false,
+  });
   
-  module.exports = Chat;
+  module.exports = ArchivedChat;

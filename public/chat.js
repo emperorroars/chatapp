@@ -1,109 +1,257 @@
-let id
-let localmessage=[]
-window.addEventListener("DOMContentLoaded",()=>{
-  console.log("reloaded")
-  const token = localStorage.getItem('token');
-  
-  let index;
-  //if (localmessage.data == [] || localmessage.data === null)
-  if (!localmessage.data || localmessage.data.length === 0)
-  { index=0 
-    console.log("haihello")
-    axios.get(`/chat/get/${id}`, {
-      headers: { "Authorization": token }})
-    .then((response) => {
-      console.log("this is response",response)
-     // let mergedData = localmessage.data.concat(response.data)
-      localStorage.setItem('localmessage',JSON.stringify(response))
-       console.log(localmessage)
-      console.log(" i am the user",response)
-      for(var i=0;i<response.data.length;i++)
-      renderExpenseList(response.data[i])   
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
-   
-else{
-  let localmessage=JSON.parse(localStorage.getItem('localmessage'))
-  console.log("plingu",localmessage)
-  console.log("find local message",localmessage)
-  index = localmessage.data.length - 1;
-  console.log("find index",index)
-   id=localmessage.data[index].id
-  console.log("find the id",id)
-  axios.get(`/chat/get/${id}`, {
-    headers: { "Authorization": token }})
-  .then((response) => {
-    console.log("this is response",response)
-    let mergedData = localmessage.data.concat(response.data)
-    localStorage.setItem('localmessage',JSON.stringify(mergedData))
-     console.log(localmessage)
-    console.log(" i am the user",response)
-    for(var i=0;i<localmessage.data.length;i++)
-    renderExpenseList(localmessage.data[i])   
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-
-}
+var currentGroupId;
+let currentgroup;
+const socket = io(window.location.origin);
+socket.on('group-message', (currentGroupId) => {
+    
+        getMessageById(currentGroupId)
+    
 })
-/*setTimeout(() =>{  
-  window.location.reload()
-  
-}, 1000)*/
-var SendButton = document.getElementById('send')
-SendButton.addEventListener("click",addchat)
 
-function addchat(event) {
-    event.preventDefault()
-    console.log("addchat is working")
-    const message = document.getElementById('message').value;
-  const body= {
-    message:message
-    };
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+window.addEventListener("DOMContentLoaded", () => {getGroupList();})
+async function getGroupList(e) {
+  
+  //console.log(list);
  
-    if(message!='')
-    {
-    const token = localStorage.getItem('token');
-    axios.post("/chat/",body, {
-      headers: { "Authorization": token }
-    })
-    .then((response) => {
-     // window.location.reload();
-      //renderExpenseList(expense) 
-      //console.log("render is working")
-      console.log(response)
-    })
-    .catch((err) => {
-      console.log("FAILED")
-    })
-    }}
-    function renderExpenseList(chat) {
-      console.log("render is working")
-      //const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-      const itemsList = document.getElementById('chats');
-     // itemsList.innerHTML = ''; // Clear previous list items
-    
-      //expenses.forEach((expense, index) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.textContent = `${chat.name}:${chat.message}`;
-    
-        /*const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger btn-sm float-right delete';
-        deleteButton.textContent = 'X';
-        deleteButton.addEventListener('click', () => deleteExpense(expense,listItem));
-    
-        const editButton = document.createElement('button');
-        editButton.className = 'btn btn-primary btn-sm float-right edit';
-        editButton.textContent = 'Edit';
-        editButton.addEventListener('click', () => editExpense(expense,listItem));
-    
-        listItem.appendChild(deleteButton);
-        listItem.appendChild(editButton);*/
-        itemsList.appendChild(listItem);
-      //});
+    const data = await axios.get(`/group/grouplist`, {
+      headers: { Authorization: localStorage.getItem("token"), }
+    });
+    //console.log(data);
+    data?.data?.groupList[0]?.groups?.map((list) => displayGroup(list));
+    let div = document.getElementsByClassName("side__lower-contact");
+    console.log(div);
+    for (let i = 0; i < div.length; i++) {
+      div[i].addEventListener("click", () => {
+        console.log(div[i]);
+        const id = div[i].id;
+        console.log(id);
+        let groupId = id.match(/(\d+)/);
+        console.log(groupId);
+        currentGroupId = Number(groupId[0]);
+        console.log(currentGroupId);
+        localStorage.setItem("currentgroup",currentGroupId)
+        getMessageById(groupId[0]);
+      });
     }
+  
+}
+
+async function displayGroup(list) {
+  console.log(list);
+   const div = document.createElement("div")
+  //console.log(groupList);
+  const boxgroups = document.getElementById("boxgroups");
+  div.className = `side__lower-contact`;
+  div.id = `group${list?.id}`;
+div.innerHTML = `
+<div class="d-flex flex-row align-items-center">
+  <img src="https://picsum.photos/seed/${list.id}/200" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%;">
+<strong>${list.groupname}</strong>
+</div>
+`;
+  boxgroups.appendChild(div);
+}
+const sendMessage = document.getElementById("sendMessage");
+sendMessage.addEventListener("click", async (e) => {
+  e.preventDefault();
+   const fileInput = document.getElementById("fileInput");
+    const inputChat = document.getElementById("inputChat");
+    const selectedFile = fileInput.files[0];
+  if (selectedFile && selectedFile.type.startsWith('image/')) {
+        // Handle image upload
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+        formData.append('GroupId', currentGroupId);
+        const data = await axios.post('/chat/image', formData, {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'multipart/form-data'//we require multer for this 
+                }
+            });
+          }
+          else if (inputChat.value.trim() !== ''){
+console.log(inputChat.value);
+  const message = {
+    message: inputChat?.value,
+    groupId: currentGroupId,
+     };
+    const data = await axios.post(`/chat`, message, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
+ 
+          }
+  
+  /*const messageList = document.getElementById("messageList");
+  let id = 1;
+  if (messageList.lastElementChild !== null)
+    id = messageList.lastElementChild.id;
+  await getMessageById(currentGroupId, id);*/
+  
+  // getMessageById(message.groupId);
+  // let messages = [];
+  // if (isMessage()) {
+  //     messages = localStorage.getItem('messages');
+  //     messages = JSON.parse(messages);
+  // }
+  // messages.push({ id: data?.data?.data?.id, name: "You", message: data?.data?.data?.message })
+  //displayMessage("You", data?.data?.data?.message, data?.data?.data?.id);
+  inputChat.value = "";
+  socket.emit('new-group-message', currentGroupId)
+  {
+    getMessageById(currentGroupId)
+    console.log("hi socket")
+
+  }
+                
+            
+
+  //inputChat.focus();
+});
+
+
+async function getMessageById(groupId) {
+  console.log("this is groupid",groupId)
+
+    let id;
+    let localmessage = [];
+    let index;
+    const messageList = document.getElementById('boxchats');
+    const groupName = document.getElementById("boxheader");
+    const token = localStorage.getItem("token");
+    const decodetoken = parseJwt(token);
+    //groupName.addEventListener('click',getAdmin);
+   messageList.innerHTML = "";
+   
+    const data = await axios.get(`/chat/groupdetails?groupId=${groupId}`, {
+      headers: { Authorization: localStorage.getItem("token") },
+    });
+    groupName.innerHTML = `${data?.data?.groupname}`;
+    if (decodetoken.userId===data.data.createdby) 
+    { console.log(decodetoken.userId); 
+      console.log(data.data.createdby);
+      const action = document.getElementById("action");
+    action.style.display = "flex";
+  }
+    else {
+      console.log(decodetoken.userId);
+      console.log(data.data.createdby);
+      const action = document.getElementById("action");
+      action.style.display = "none";
+    }
+   console.log("find the group details", data);
+      if (!localmessage.data || localmessage.data.length === 0) {
+        id = 0;
+        console.log("haihello");
+        const data = await axios.get(
+          `/chat?groupId=${groupId}&id=${id}`,
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        );
+
+        console.log("this is response", data);
+        localStorage.setItem("localmessage", JSON.stringify(data));
+        console.log(localmessage);
+       // groupName.innerHTML = `${data?.data[0]?.group?.groupname}`;
+        console.log(groupName)
+        for(let i=0;i<data.data.length;i++)
+        {
+ 
+               const obj = {
+                 id: data.data[i].id,
+                 name: data.data[i].name,
+                 message: data.data[i].message,
+                  isImage:data.data[i].isImage
+               };
+               console.log(obj);
+               displayMessage(obj.name, obj.message, obj.id,obj.isImage);      
+        }
+     
+      } 
+      else {
+        let localmessage = JSON.parse(localStorage.getItem("localmessage"));
+        console.log("plingu", localmessage);
+        console.log("find local message", localmessage);
+        index = localmessage.data.length - 1;
+        console.log("find index", index);
+        id = localmessage.data[index].id;
+        console.log("find the id", id);
+      const data = await axios.get(
+          `chat?groupId=${groupId}&id=${id}`,
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        );
+          
+               console.log("this is response", data);
+               localStorage.setItem("localmessage", JSON.stringify(data));
+               console.log(localmessage);
+              // groupName.innerHTML = `${data?.data?.data[0]?.group?.groupname}`;
+               for (let i = 0; i < data.data.length; i++) {
+                 const obj = {
+                   id: data.data[i].id,
+                   name: data.data[i].name,
+                   message: data.data[i].message,
+                   isImage:data.data[i].isImage
+                 };
+                 console.log(obj);
+                displayMessage(obj.name, obj.message, obj.id,obj.isImage);    
+               }
+         
+      }
+}
+
+  const displayMessage = (name, message, id,isImage) => {
+     const token = localStorage.getItem("token");
+    const decodetoken = parseJwt(token);
+    const messageList = document.getElementById("boxchats");
+    let element = document.createElement("div");
+    element.id = id;
+    console.log(isImage)
+    //if (name === decodetoken.name)
+    //  element.className = "chat__main-msg chat__main-msg-me";
+   // else element.className = "chat__main-msg chat__main-msg-user";
+    if (isImage==1) {
+      console.log("image hai")
+        // If it is an image URL, create an <img> element to display it
+        element.innerHTML = `${name}: <a href="${message}"><img src="${message}" alt="Image" style="max-width: 200px; height: auto;"></a>`;
+
+    } else {
+        // If it's not an image URL, display it as text
+        element.innerHTML = `${name}: ${message}`;
+    }
+    
+    messageList.appendChild(element);
+  };
+  
+  
+document.getElementById('attachButton').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default button behavior
+    var inputChat = document.getElementById('inputChat');
+    var fileDisplay = document.getElementById('fileDisplay');
+     const fileInput = document.getElementById("fileInput");
+   
+
+    if (inputChat.style.display !== 'none') {
+        inputChat.style.display = 'none';
+        fileDisplay.style.display = 'flex';
+    } else {
+        inputChat.style.display = 'flex';
+        fileDisplay.style.display = 'none';
+        fileInput.value=''
+    }
+});

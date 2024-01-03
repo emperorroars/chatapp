@@ -6,4 +6,5 @@ router.get('/login',mainpageController.getloginPage);
 router.get('/pagechat',mainpageController.getchat);
 router.get("/creategroup", mainpageController.creategroup);
 router.get("/updategroup", mainpageController.updategroup);
+router.get("/forgotpassword",mainpageController.getforgotpassword)
 module.exports = router;

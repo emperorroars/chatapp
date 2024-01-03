@@ -1,18 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-</head>
-<body>
-    <div class="message">
-        <input class="message" type="message" id="message" placeholder="Type To text">
-        <a href="#"> <button class="btn"id="send">Send</button></a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatapp</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="chat">
+      <header>
+        <a href="#" class="logo">Groups</a
+        ><!-- # is used as dummy so that link does not navigate anywhere -->
+        <div class="action">
+          <!--use div. for shortcut-->
+          <!-- use a tab for shortcut-->
+          <a href="/creategroup"><ion-icon name="person-add-sharp"></ion-icon></ion-icon></a>
+         
+        </div>
+      </header>
+      <!--  <div class="tabs">
+        <input id="chats" type="radio" name="group" checked>
+         <div class="buttons">
+        <label for="chats">CHATS</label>
+    </div>-->
+      <div class="content">
+        <div class="boxgroups"id="boxgroups"></div>
+      </div>
+      <!--</div>-->
     </div>
-    <ul id="chats" class="list-group"> </ul>
-    <script src="chat.js"></script>
+    <div class="container">
+      <header>
+         <a href="#" class="logo">Chatapp</a>
+        <div class="action" id="action">
+         
+           <a href="/updategroup"><ion-icon name="create-sharp"></ion-icon></a>
+        </div>
+           
+           
+          
+        
+         
+        <!-- # is used as dummy so that link does not navigate anywhere -->
+      </header>
+      <!--  <div class="tabs">
+        <input id="chats" type="radio" name="group" checked>
+         <div class="buttons">
+        <label for="chats">CHATS</label>
+    </div>-->
+      <div class="content">
+        <div class="boxheader"id="boxheader"></div>
+        <div class="boxchats"id="boxchats"></div>
+      </div>
+      <!--</div>-->
+
+      <div class="messageinput">
+        <div class="input">
+          <button id="attachButton"><ion-icon name="attach-outline"></ion-icon></button>
+          <div id="fileDisplay" style="display:none;">
+<input type="file" id="fileInput" accept="image/*" />
+          </div>
+            
+          <input type="text" id="inputChat" placeholder="Enter your Message" />
+          <button type="submit" id="sendMessage"><ion-icon name="send-sharp"></ion-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <!--this is used for providing icons-->
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+      <script src="chat.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+        
     
-</body>
+  </body>
 </html>

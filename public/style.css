@@ -84,7 +84,10 @@ body{
     cursor:pointer;
 }*/
 .boxchats{
-    background:pink;
+    background: pink;
+    overflow-y: auto;
+    max-height: 450px;
+    
 }
 .boxheader{
      position:relative;

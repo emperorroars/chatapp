@@ -16,6 +16,7 @@ const cors = require("cors")
 const userroutes = require(`./routes/userroutes`)
 const chatroute = require(`./routes/chatroute`)
 const grouproutes = require(`./routes/grouproutes`);
+const forgotpasswordroutes=require(`./routes/forgotpassword`)
 const app = express()
 app.use(cors({
    /*origin: "http://localhost:4000"*/
@@ -50,6 +51,7 @@ app.use('/', mainPageRouter)
 app.use('/user', userroutes)
 app.use('/chat', chatroute)
 app.use('/group', grouproutes);
+app.use('/password',forgotpasswordroutes)
 sequelize.sync()
     .then(() => {
         console.log('Database tables have been created.');

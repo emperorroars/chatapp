@@ -1,4 +1,5 @@
 const groupList = [];
+window.addEventListener("DOMContentLoaded", () => {findusers();})
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -71,4 +72,25 @@ listofusers.innerHTML += `<li id="${id}">${name}<button id="btn${id}" onclick="a
 function addtogroup(id) {
   groupList.push(id);
   console.log(groupList);
+}
+async function findusers()
+{
+ let listofmembers= document.getElementById("listofmembers")
+   const data1 = await axios.get(`/group/update/finduser`,{headers: {
+    Authorization: localStorage.getItem("token"),
+  }});
+  console.log(data1)
+   data1?.data?.data.map((list) => {
+
+// Now map through data1.data.data
+
+  const listItem = document.createElement('li');
+
+  // Check if the user ID is in the memberIds set
+ 
+    listItem.innerHTML = `${list.name}`;
+ 
+  listofmembers.appendChild(listItem)
+   })
+    
 }

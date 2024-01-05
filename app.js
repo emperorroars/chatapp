@@ -17,6 +17,8 @@ const userroutes = require(`./routes/userroutes`)
 const chatroute = require(`./routes/chatroute`)
 const grouproutes = require(`./routes/grouproutes`);
 const forgotpasswordroutes=require(`./routes/forgotpassword`)
+const cronService = require('./middleware/cron');
+cronService.job.start();
 const app = express()
 app.use(cors({
    /*origin: "http://localhost:4000"*/
